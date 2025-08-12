@@ -1,0 +1,75 @@
+import json
+import os
+
+TASKS_FILE = "tasks.json"
+
+def load_tasks():
+    if os.path.exists(TASKS_FILE):
+        with open(TASKS_FILE, "r") as f:
+            return json.load(f)
+    return []
+
+def save_tasks(tasks):
+    with open(TASKS_FILE, "w") as f:
+        json.dump(tasks, f, indent=4)
+
+def display_tasks(tasks):
+    if not tasks:
+        print("No tasks found.")
+        return
+    for i, task in enumerate(tasks, 1):
+        status = "✓" if task["completed"] else "✗"
+        print(f"{i}. {task['title']} (Due: {task['due_date']}) [{status}]")
+
+def add_task(tasks):
+    title = input("Enter task title: ")
+    due_date = input("Enter due date (YYYY-MM-DD): ")
+    tasks.append({"title": title, "due_date": due_date, "completed": False})
+    print("Task added!")
+
+def mark_complete(tasks):
+    display_tasks(tasks)
+    index = int(input("Enter task number to mark complete: ")) - 1
+    if 0 <= index < len(tasks):
+        tasks[index]["completed"] = True
+        print("Task marked as complete.")
+    else:
+        print("Invalid task number.")
+
+def edit_task(tasks):
+    display_tasks(tasks)
+    index = int(input("Enter task number to edit: ")) - 1
+    if 0 <= index < len(tasks):
+        title = input("New title (leave blank to keep current): ")
+        due_date = input("New due date (leave blank to keep current): ")
+        if title:
+            tasks[index]["title"] = title
+        if due_date:
+            tasks[index]["due_date"] = due_date
+        print("Task updated.")
+    else:
+        print("Invalid task number.")
+
+def delete_task(tasks):
+    display_tasks(tasks)
+    index = int(input("Enter task number to delete: ")) - 1
+    if 0 <= index < len(tasks):
+        tasks.pop(index)
+        print("Task deleted.")
+    else:
+        print("Invalid task number.")
+
+def main():
+    tasks = load_tasks()
+    while True:
+        print("\n--- To-Do List Menu ---")
+        print("1. View Tasks")
+        print("2. Add Task")
+        print("3. Mark Task as Complete")
+        print("4. Edit Task")
+        print("5. Delete Task")
+        print("6. Exit")
+        choice = input("Choose an option: ")
+
+if __name__ == "__main__":
+    main()
